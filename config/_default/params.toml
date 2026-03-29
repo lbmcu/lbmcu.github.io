@@ -1,13 +1,14 @@
 [sidebar]
+  emoji = "👽"
   subtitle = "PLC & Embedded Systems Engineer"
-  avatar = "/img/avatar.png"
+  avatar = "img/avatar.png"
 
 [article]
   readingTime = true
   toc = true
 
 [footer]
-  since = 2026
+  since = 2017
 
 [widgets]
   homepage = [
