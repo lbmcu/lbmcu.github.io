@@ -1,0 +1,29 @@
+[[main]]
+  name = "Home"
+  url = "/"
+  weight = 1
+
+[[main]]
+  name = "PLC"
+  url = "/plc/"
+  weight = 2
+
+[[main]]
+  name = "Embedded"
+  url = "/embedded/"
+  weight = 3
+
+[[main]]
+  name = "Linux"
+  url = "/linux/"
+  weight = 4
+
+[[main]]
+  name = "Notes"
+  url = "/notes/"
+  weight = 5
+
+[[main]]
+  name = "About"
+  url = "/about/"
+  weight = 6

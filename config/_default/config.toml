@@ -1,0 +1,14 @@
+baseURL = "http://localhost:1313/"
+languageCode = "zh-cn"
+title = "Nolan's Blog"
+theme = "stack"
+
+[pagination]
+  pagerSize = 6
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+[params]
+  mainSections = ["plc", "embedded", "linux", "notes"]
