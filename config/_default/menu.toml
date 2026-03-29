@@ -3,27 +3,45 @@
   url = "/"
   weight = 1
 
+  [main.params]
+    icon = "home"
+
 [[main]]
   name = "PLC"
   url = "/plc/"
   weight = 2
+
+  [main.params]
+    icon = "home"
 
 [[main]]
   name = "Embedded"
   url = "/embedded/"
   weight = 3
 
+  [main.params]
+    icon = "home"
+
 [[main]]
   name = "Linux"
   url = "/linux/"
   weight = 4
+
+  [main.params]
+    icon = "home"
 
 [[main]]
   name = "Notes"
   url = "/notes/"
   weight = 5
 
+  [main.params]
+    icon = "home"
+
 [[main]]
   name = "About"
   url = "/about/"
   weight = 6
+
+  [main.params]
+    icon = "home"
