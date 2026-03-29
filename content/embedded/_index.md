@@ -1,4 +1,0 @@
----
-title: "Embedded"
-type: "page"
----

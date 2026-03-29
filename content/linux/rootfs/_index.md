@@ -1,4 +1,0 @@
----
-title: "Rootfs"
-type: "page"
----

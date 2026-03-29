@@ -1,7 +1,0 @@
-# .gitignore
-
-# Ignore all files in the public directory
-public
-resources
-.hugo_build.lock
-

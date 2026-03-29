@@ -1,4 +1,0 @@
----
-title: "Codesys"
-type: "page"
----

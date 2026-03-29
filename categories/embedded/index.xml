@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Embedded on Nolan's Blog</title><link>https://lbmcu.github.io/categories/embedded/</link><description>Recent content in Embedded on Nolan's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 06 Mar 2025 22:06:52 +0800</lastBuildDate><atom:link href="https://lbmcu.github.io/categories/embedded/index.xml" rel="self" type="application/rss+xml"/><item><title>ARM汇编——Condition Flags and Codes</title><link>https://lbmcu.github.io/embedded/arm/arm-condition-flags/</link><pubDate>Thu, 06 Mar 2025 22:06:52 +0800</pubDate><guid>https://lbmcu.github.io/embedded/arm/arm-condition-flags/</guid><description>&lt;p&gt;每一种实用的通用计算架构都存在有条件执行某些代码的机制。 例如，这种机制用于实现 C 语言中的 if 结构，此外还有其他一些不太常见的情况；与许多其他架构一样，Arm 也使用一组标记（flags）来实现条件执行，这些标记存储了有关先前操作的状态信息。&lt;/p&gt;
+&lt;h2 id="案例"&gt;案例
+&lt;/h2&gt;&lt;p&gt;请看一段简单的 C 代码：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-c" data-lang="c"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;for&lt;/span&gt; (i &lt;span style="color:#f92672"&gt;=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;10&lt;/span&gt;; i &lt;span style="color:#f92672"&gt;!=&lt;/span&gt; &lt;span style="color:#ae81ff"&gt;0&lt;/span&gt;; i&lt;span style="color:#f92672"&gt;--&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#a6e22e"&gt;do_something&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;编译器可按如下方式实现该结构：&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code class="language-assembly" data-lang="assembly"&gt;mov r4, 10
+loop_label:
+	bl 		do_something
+	sub 	r4, r4, #1
+	cmp 	r4, #0
+	bne 	loop_label
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;最后两条指令尤其值得关注。&lt;code&gt;cmp&lt;/code&gt;指令将&lt;code&gt;r4&lt;/code&gt;和&lt;code&gt;0&lt;/code&gt;进行比较，如果&lt;code&gt;cmp&lt;/code&gt;的结果是&lt;code&gt;not equal&lt;/code&gt;（不等于），那么&lt;code&gt;bne&lt;/code&gt;指令只是一条&lt;code&gt;b(branch)&lt;/code&gt;条件指令。代码之所以能运行，是因为&lt;code&gt;cmp&lt;/code&gt;指令设置了一些全局标志，表示操作的各种属性。而&lt;code&gt;bne&lt;/code&gt;指令实际上只是一个带有 &lt;code&gt;ne&lt;/code&gt;条件代码后缀的 &lt;code&gt;b(branch)&lt;/code&gt;指令，通过读取这些标志来决定是否进行分支跳转。&lt;/p&gt;
+&lt;p&gt;下面的代码实现了一个更有效的解决方案：&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code class="language-assembly" data-lang="assembly"&gt;mov r4, 10
+loop_label:
+	bl 		do_something
+	subs 	r4, r4, #1
+	bne 	loop_label
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在 &lt;code&gt;sub&lt;/code&gt; 指令添加后缀&lt;code&gt; s&lt;/code&gt; 会使其根据运算结果自行更新标志。 这个后缀可以添加到许多（但不是所有）算术和逻辑运算中。&lt;/p&gt;
+&lt;p&gt;文章的后续，我将解释&lt;code&gt;CPSR条件标志&lt;/code&gt;是什么、它们存储在哪里，以及如何使用条件代码来测试它们。&lt;/p&gt;
+&lt;h2 id="the-flags"&gt;The Flags
+&lt;/h2&gt;&lt;p&gt;设置条件标志的最简单方法是使用比较操作，如&lt;code&gt;cmp&lt;/code&gt;。 这种机制在许多处理器架构中都很常见，而且 &lt;code&gt;cmp&lt;/code&gt;的语义（如果不考虑细节的话）可能也很相似。此外，我们已经看到，许多指令（如示例中的&lt;code&gt; sub&lt;/code&gt;）都可以通过添加 &lt;code&gt;s&lt;/code&gt; 后缀进行修改，并根据结果更新条件标志。 这一切都很好，但标志存储的是什么信息，我们又该如何访问这些信息呢？&lt;/p&gt;
+&lt;p&gt;附加信息存储在 &lt;code&gt;APSR（应用处理器状态寄存器）&lt;/code&gt;或 &lt;code&gt;CPSR（当前处理器状态寄存器）&lt;/code&gt;中，这些标记表示简单的属性，如结果是否为负数，并通过各种组合来检测更高层次的关系，如 &amp;ldquo;大于 &amp;ldquo;等。 描述完标记后，我将解释它们如何映射到条件代码（如上一示例中的 &lt;code&gt;ne&lt;/code&gt;）。&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;在 &lt;code&gt;Armv7&lt;/code&gt; 上，尽管&lt;code&gt;APSR&lt;/code&gt;和&lt;code&gt; CPSR&lt;/code&gt;有不同的名称，但实际是一样的，仅几个条件标志是为&lt;code&gt;APSR&lt;/code&gt;定义的，其他无法访问，所以无论如何都不应该直接访问&lt;code&gt;APSP&lt;/code&gt;的其他位，&lt;code&gt;APSR&lt;/code&gt;本质是对&lt;code&gt;CPSR&lt;/code&gt;在应用层的精简。&lt;/p&gt;
+&lt;p&gt;注意：&lt;strong&gt;&lt;code&gt;GCC &amp;lt; 4.3.3&lt;/code&gt;版本不支持&lt;code&gt;APSR&lt;/code&gt;&lt;/strong&gt;，如果要访问，则必须在汇编代码中使用&lt;code&gt;CPSR&lt;/code&gt;。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id="n-negative"&gt;N: Negative
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;N&lt;/code&gt;标志置位：说明指令结果为负&lt;/p&gt;
+&lt;h3 id="z-zero"&gt;Z: Zero
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;Z&lt;/code&gt;标志置位：说明指令结果为零&lt;/p&gt;
+&lt;h3 id="c-carry-or-unsigned-overflow"&gt;C: Carry (or Unsigned Overflow)
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;C&lt;/code&gt;标志置位：说明&lt;strong&gt;无符号运算的结果溢出 32 位寄存器&lt;/strong&gt;（该位可用于实现 64 位无符号运算）&lt;/p&gt;
+&lt;h3 id="v-signed-overflow"&gt;V: (Signed) Overflow
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;V&lt;/code&gt;标志置位原理和&lt;code&gt;C&lt;/code&gt;标志一致都是溢出，但是&lt;strong&gt;有符号运算&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;例如，&lt;code&gt;0x7fffffff&lt;/code&gt;是32位所表示最大的二进制整数，当&lt;code&gt;0x7fffffff + 0x7fffffff&lt;/code&gt;会造成有符号溢出，&lt;strong&gt;此时&lt;code&gt;V&lt;/code&gt;标志置位&lt;/strong&gt;，但不是一个无符号溢出/进位 (&lt;code&gt;0xfffffffe&lt;/code&gt;)，所以&lt;code&gt;C&lt;/code&gt;标志不置位。&lt;/p&gt;
+&lt;h3 id="标志设置案例"&gt;标志设置案例
+&lt;/h3&gt;&lt;p&gt;请看下面的例子：&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code class="language-assembly" data-lang="assembly"&gt;ldr r1, =0xffffffff
+ldr r2, =0x00000001
+adds r0, r1, r2
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;操作计算的结果将会是&lt;code&gt;0x100000000&lt;/code&gt;最高位会被丢弃，因为32位目标寄存器无法储存，所以最终的真实结果是：&lt;code&gt;0x00000000&lt;/code&gt;，案例的标志位最终结果：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Flag&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Explanation&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;N = 0&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;结果为0，被认为是正值，因此&lt;code&gt;N（negative）&lt;/code&gt;位置0&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Z = 1&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;结果为0，所以&lt;code&gt;Z(zero)&lt;/code&gt;位置1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;C = 1&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;由于运算结果无法容纳 32 位寄存器 最高位被丢弃，所以处理器会将 &lt;code&gt;C（carry）&lt;/code&gt;位置 1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;V = 0&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;从二进制带符号的算术角度，&lt;code&gt;0xffffffffff&lt;/code&gt;实际上表示&lt;code&gt;-1&lt;/code&gt;，因此所做的运算实际上是&lt;code&gt;(-1) + 1 = 0&lt;/code&gt;，该运算显然没有溢出，因此&lt;code&gt;V（overflow）&lt;/code&gt;位置 0&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;如果你感兴趣，你可以通过&lt;code&gt;ccdemo&lt;/code&gt;应用程序进行检查，输出类似：&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code class="language-assembly" data-lang="assembly"&gt;$ ./ccdemo adds 0xffffffff 0x1
+The results (in various formats):
+ Signed: -1 adds 1 = 0
+ Unsigned: 4294967295 adds 1 = 0
+ Hexadecimal: 0xffffffff adds 0x00000001 = 0x00000000
+Flags:
+ N (negative): 0
+ Z (zero) : 1
+ C (carry) : 1
+ V (overflow): 0
+Condition Codes:
+ EQ: 1 NE: 0
+ CS: 1 CC: 0
+ MI: 0 PL: 1
+ VS: 0 VC: 1
+ HI: 0 LS: 1
+ GE: 1 LT: 0
+ GT: 0 LE: 1
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id="如何读取标志"&gt;如何读取标志
+&lt;/h2&gt;&lt;p&gt;我们已经搞清楚如何去设置标志，但是去有条件执行一些代码的结果是什么？如果你不能去反应他们，那么去设置这些标志是无意义的。&lt;/p&gt;
+&lt;p&gt;最常见的测试标志的方式是使用条件执行指令，这个指令和其他结构是相似的，如果你熟悉其他指令，那么你可能识别，&lt;/p&gt;
+&lt;p&gt;我们已经知道了如何设置标记，但如何才能有条件地执行某些代码呢？ 如果不能对标记做出反应，那么设置标记就毫无意义。&lt;/p&gt;
+&lt;p&gt;测试标记的最常用方法是使用条件执行代码。 这种机制与其他体系结构中使用的机制类似，因此，如果你熟悉其他机器，你可能会识别出以下模式，它与 C 的 if/else 结构一一对应：&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code class="language-assembly" data-lang="assembly"&gt;cmp		r0, #20
+bhi		do_something_else
+do_someing:
+	@ This code runs if (r0 &amp;lt;= 20).
+	b 	continue		@Prevent do_something_else from executing.
+do_something_else:
+	@ This code runs if (r0 &amp;gt; 20).
+continue:
+	@ Other code
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;实际上，将其中一个条件代码附加到指令中，如果条件为真，指令就会执行。 否则，指令什么也不执行，基本上就是一个 &lt;code&gt;nop&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;下表列出了可用的条件代码，其含义（标志位由&lt;code&gt;cmp&lt;/code&gt;或&lt;code&gt;subs&lt;/code&gt;指令设置）以及要测试的标志位：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Code&lt;/th&gt;
+ &lt;th&gt;Meaning(for cmp or subs)&lt;/th&gt;
+ &lt;th&gt;Flags Tested&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;eq&lt;/td&gt;
+ &lt;td&gt;Equal&lt;/td&gt;
+ &lt;td&gt;Z==1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;ne&lt;/td&gt;
+ &lt;td&gt;Not equal&lt;/td&gt;
+ &lt;td&gt;Z==0&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;cs or hs&lt;/td&gt;
+ &lt;td&gt;Unsigned highter or same (or carry set)&lt;/td&gt;
+ &lt;td&gt;C==1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;cc or lo&lt;/td&gt;
+ &lt;td&gt;Unsigned Lower (or carry clear)&lt;/td&gt;
+ &lt;td&gt;C==0&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;mi&lt;/td&gt;
+ &lt;td&gt;Negative. The mnemonic stands for &amp;ldquo;minus&amp;rdquo;&lt;/td&gt;
+ &lt;td&gt;N==1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;pl&lt;/td&gt;
+ &lt;td&gt;Positive or zero. The mnemonic stands for &amp;ldquo;plus&amp;rdquo;&lt;/td&gt;
+ &lt;td&gt;N==0&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;vs&lt;/td&gt;
+ &lt;td&gt;Signed overflow. The mnemonic stands for &amp;ldquo;V set&amp;rdquo;&lt;/td&gt;
+ &lt;td&gt;V==1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;vc&lt;/td&gt;
+ &lt;td&gt;No signed overflow. The mnemonic stands for &amp;ldquo;V Clear&amp;rdquo;&lt;/td&gt;
+ &lt;td&gt;V==0&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;hi&lt;/td&gt;
+ &lt;td&gt;Unsigned higher&lt;/td&gt;
+ &lt;td&gt;（C==1)&amp;amp;&amp;amp; （Z==0）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;ls&lt;/td&gt;
+ &lt;td&gt;Unsigned lower or same&lt;/td&gt;
+ &lt;td&gt;（C==0）&amp;amp;&amp;amp; （Z==1）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;ge&lt;/td&gt;
+ &lt;td&gt;Signed greater than or equal&lt;/td&gt;
+ &lt;td&gt;N==V&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;lt&lt;/td&gt;
+ &lt;td&gt;Signed less than&lt;/td&gt;
+ &lt;td&gt;N!=V&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;gt&lt;/td&gt;
+ &lt;td&gt;Signed greater than&lt;/td&gt;
+ &lt;td&gt;（Z==0）&amp;amp;&amp;amp; （N==V）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;le&lt;/td&gt;
+ &lt;td&gt;Signed less than or equal&lt;/td&gt;
+ &lt;td&gt;（Z==1）|| （N!=V）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;al(or ommitted)&lt;/td&gt;
+ &lt;td&gt;Always executed&lt;/td&gt;
+ &lt;td&gt;None tested&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;前几个代码的原理非常明显，因为它们测试的是单个标志，但其他代码依赖于特定组合的标志。在实际操作中，你很少需要知道具体发生了什么，助记符掩盖了比较的复杂性。&lt;/p&gt;
+&lt;p&gt;下面是我之前给出的 for 循环代码示例：&lt;/p&gt;
+&lt;pre tabindex="0"&gt;&lt;code class="language-assembly" data-lang="assembly"&gt;mov r4, 10
+loop_label:
+	bl 		do_something
+	subs 	r4, r4, #1
+	bne 	loop_label
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;现在应该很容易弄清楚这里到底发生了什么：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;subs&lt;/code&gt;指令根据&lt;code&gt;r4 - 1&lt;/code&gt;的结果设置标志。特别是，如果结果是0，&lt;code&gt;Z&lt;/code&gt;标志位将被置位（&lt;code&gt;Z=1&lt;/code&gt;），如果结果是其他，&lt;code&gt;Z&lt;/code&gt;标志将被复位(&lt;code&gt;Z=0&lt;/code&gt;)。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;bne&lt;/code&gt;指令只有在&lt;code&gt;ne&lt;/code&gt;条件为真的情况下才会执行，而只有当&lt;code&gt;Z=0&lt;/code&gt;时，&lt;code&gt;ne&lt;/code&gt;条件才为真，所以&lt;code&gt;bne&lt;/code&gt;会遍历循环，直到&lt;code&gt;Z&lt;/code&gt;被置1（即此时&lt;code&gt;r4 = 0&lt;/code&gt;）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="专用比较指令"&gt;专用比较指令
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;cmp&lt;/code&gt;指令（我们在第一个案例看到过）可以看做是一条不储存结果的&lt;code&gt;sub&lt;/code&gt;指令；如果两个操作数相同，减法的结果将为零，因为&lt;code&gt;eq&lt;/code&gt;和&lt;code&gt;Z&lt;/code&gt;标志之间存在映射关系。 当然，我们也可以使用假寄存器的&lt;code&gt;sub&lt;/code&gt;指令，但只有在有空余寄存器的情况下才能这样做。 因此，专用比较指令非常常用。&lt;/p&gt;
+&lt;p&gt;实际上有四条专用比较指令，它们执行的操作如下表所示：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;Instruction&lt;/th&gt;
+ &lt;th&gt;Description&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;strong&gt;&lt;code&gt;cmp&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+ &lt;td&gt;Works like &lt;strong&gt;&lt;code&gt;subs&lt;/code&gt;&lt;/strong&gt;, but does not store the result.&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;strong&gt;&lt;code&gt;cmn&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+ &lt;td&gt;Works like &lt;strong&gt;&lt;code&gt;adds&lt;/code&gt;&lt;/strong&gt;, but does not store the result.&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;strong&gt;&lt;code&gt;tst&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+ &lt;td&gt;Works like &lt;strong&gt;&lt;code&gt;ands&lt;/code&gt;&lt;/strong&gt;, but does not store the result.&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;&lt;strong&gt;&lt;code&gt;teq&lt;/code&gt;&lt;/strong&gt;&lt;/td&gt;
+ &lt;td&gt;Works like &lt;strong&gt;&lt;code&gt;eors&lt;/code&gt;&lt;/strong&gt;, but does not store the result.&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;请注意，专门的比较操作不需要后缀 s；它们只更新标志，因此后缀是多余的。&lt;/p&gt;
+&lt;h2 id="结束语"&gt;结束语
+&lt;/h2&gt;&lt;p&gt;虽然条件标志机制在原理上相当简单，但需要考虑的细节很多，看一些实际例子可能会有所帮助！ 我将在今后的博文中介绍一些实际使用的例子。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;[文章翻译来源]：&lt;/strong&gt;&lt;a class="link" href="https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/condition-codes-1-condition-flags-and-codes" target="_blank" rel="noopener"
+ &gt;condition-codes-1-condition-flags-and-codes&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;更好的翻译不如原文的表达精确，希望大家有能力的情况下，阅读英文原文章！&lt;/p&gt;</description></item></channel></rss>
