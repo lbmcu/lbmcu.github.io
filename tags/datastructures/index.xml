@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DataStructures on Nolan's Blog</title><link>https://lbmcu.github.io/tags/datastructures/</link><description>Recent content in DataStructures on Nolan's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 30 May 2022 05:45:36 +0800</lastBuildDate><atom:link href="https://lbmcu.github.io/tags/datastructures/index.xml" rel="self" type="application/rss+xml"/><item><title>树的基本概念</title><link>https://lbmcu.github.io/notes/datastructures/%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link><pubDate>Mon, 30 May 2022 05:45:36 +0800</pubDate><guid>https://lbmcu.github.io/notes/datastructures/%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid><description>&lt;h2 id="树的定义"&gt;树的定义：
+&lt;/h2&gt;&lt;p&gt;&lt;img alt="01_树" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px"&gt;&lt;/p&gt;
+&lt;p&gt;由一个或多个(N≥0)结点组成的有限集合T，有且只有一个结点称为根(root)，当N&amp;gt;1时，其他的结点分为M(M≥0)个互不相交的有限集合[T1, T2, T3 , &amp;hellip;. , TM]。每个集合本身又是棵树，被称为这个根的子树。&lt;/p&gt;
+&lt;h2 id="树的结构特点"&gt;树的结构特点：
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;非线性结构&lt;/strong&gt;，有一个直接前驱，但可能有多个后继 &lt;strong&gt;（1:N）&lt;/strong&gt;；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;数的定义具有&lt;strong&gt;递归性&lt;/strong&gt;，树中还有树；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;树可以为空，即节点个数为0。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="树的相关概念"&gt;树的相关概念：
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;根：&lt;/strong&gt; 即&lt;strong&gt;根结点&lt;/strong&gt;（没有前驱）【A】&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;叶子：&lt;/strong&gt; 即&lt;strong&gt;终端结点&lt;/strong&gt;（没有后驱）【K, L, F, G, M, I, J】&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;森林：指m棵不相交的树的集合（例如删除A后的子树）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;有序树：结点各子树从左至右有序，不能互换&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;无序树：结点各子树可互换位置&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;双亲：&lt;/strong&gt; 即该结点的上层结点（直接前驱）parent&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;孩子：&lt;/strong&gt; 即该结点的下层结点（直接后驱）child&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;兄弟：同一双亲下的同层结点（孩子之间互称兄弟）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;堂兄弟：即双亲位于同一层的结点（非同一双亲）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;祖先：即从根到该结点所经分支的所有节点 【A, B, E 都为K的祖先，是一个集合】&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;子孙：即该结点下层子树中的任一结点&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="知识点"&gt;知识点：
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;结点：即数的数据元素&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;结点的度：&lt;/strong&gt; 结点挂接的子树数量（有几个直接后继就是有几个度）【 A结点的度：3（B, C ,D）】&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;结点的层次：从根到该结点的层数【 A：第一层；B, C, D：第二层 &amp;hellip;. 】&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;终端结点：即度为0的结点，即叶子&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;分支结点：出树根以外的结点（也称内部结点）【除A以外都是分支节点】&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;树的度：&lt;strong&gt;所有节点中的最大值&lt;/strong&gt;【Max(各结点的度)】&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;树的深度：&lt;strong&gt;指所有结点中最大的层数&lt;/strong&gt;【Max(各结点的层次)】&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;上图中的结点数 = 13，树的度 = 3， 树的深度 = 4。&lt;/p&gt;
+&lt;h2 id="树的表示左孩子右兄弟表示法"&gt;树的表示：左孩子右兄弟表示法
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;目的：&lt;/strong&gt; 将一颗多叉树转为一颗二叉树；&lt;/p&gt;</description></item></channel></rss>
