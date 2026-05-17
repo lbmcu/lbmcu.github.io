@@ -3,7 +3,7 @@
 &lt;h2 id="说明"&gt;说明
 &lt;/h2&gt;&lt;p&gt;&lt;strong&gt;==搭配上一篇文章一起食用更佳：==&lt;/strong&gt; &lt;a class="link" href="https://blog.csdn.net/qq_30722795/article/details/125039515" target="_blank" rel="noopener"
  &gt;二叉树的遍历_一看就会系列&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="请添加图片描述" class="gallery-image" data-flex-basis="304px" data-flex-grow="126" height="236" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://i-blog.csdnimg.cn/blog_migrate/1d2db1667e41477eab554297f53852cc.png#pic_center" width="299"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="二叉树遍历示例图" class="gallery-image" data-flex-basis="304px" data-flex-grow="126" height="236" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://lbmcu.github.io/notes/datastructures/%E4%BA%8C%E5%8F%89%E6%A0%91_%E5%89%8D%E5%BA%8F%E9%81%8D%E5%8E%86_%E4%B8%AD%E5%BA%8F%E9%81%8D%E5%8E%86_%E5%90%8E%E5%BA%8F%E9%81%8D%E5%8E%86%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/img/binary_tree_traversal_code.png" width="299"&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="代码实现"&gt;代码实现
 &lt;/h2&gt;&lt;h4 id="初始化二叉树"&gt;初始化二叉树
@@ -332,7 +332,7 @@
 &lt;p&gt;&lt;strong&gt;对于每一个结点的查看都是“先左后右”，注意：对象是每个子树。&lt;/strong&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="遍历操作"&gt;遍历操作：
-&lt;/h2&gt;&lt;p&gt;&lt;img alt="请添加图片描述" class="gallery-image" data-flex-basis="304px" data-flex-grow="126" height="236" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://i-blog.csdnimg.cn/blog_migrate/90ed8173ec0bd3866f4f017f68f3667d.png#pic_center" width="299"&gt;&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;img alt="二叉树遍历顺序示例图" class="gallery-image" data-flex-basis="304px" data-flex-grow="126" height="236" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://lbmcu.github.io/notes/datastructures/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%81%8D%E5%8E%86_%E4%B8%80%E7%9C%8B%E5%B0%B1%E4%BC%9A%E7%B3%BB%E5%88%97/img/binary_tree_traversal.png" width="299"&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h4 id="先序遍历根左右"&gt;先序遍历：根左右
 &lt;/h4&gt;&lt;ul&gt;
@@ -444,7 +444,7 @@
 &lt;li&gt;&lt;strong&gt;根节点：&lt;/strong&gt;【A】&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;遍历结果：&lt;/strong&gt; D, E, C, B, H, G, F, A&lt;/p&gt;</description></item><item><title>二叉树的基本概念</title><link>https://lbmcu.github.io/notes/datastructures/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</link><pubDate>Mon, 30 May 2022 05:13:39 +0800</pubDate><guid>https://lbmcu.github.io/notes/datastructures/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</guid><description>&lt;h2 id="二叉树的定义"&gt;二叉树的定义：
-&lt;/h2&gt;&lt;p&gt;&lt;img alt="01_二叉树" class="gallery-image" data-flex-basis="407px" data-flex-grow="169" height="277" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://i-blog.csdnimg.cn/blog_migrate/ba7ab70878956ad0161017e350db0aab.png#pic_center" width="470"&gt;&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;img alt="01_二叉树" class="gallery-image" data-flex-basis="407px" data-flex-grow="169" height="277" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://lbmcu.github.io/notes/datastructures/%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/img/binary_tree.png" width="470"&gt;&lt;/p&gt;
 &lt;p&gt;N（N &amp;gt; 0）个节点的有限集合，由&lt;strong&gt;一个根节点以及两颗互不相交的、分别称为左子树和右子树的二叉树组成&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id="二叉树的结构特点"&gt;二叉树的结构特点：
 &lt;/h2&gt;&lt;ul&gt;

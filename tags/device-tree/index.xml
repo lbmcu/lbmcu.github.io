@@ -330,19 +330,19 @@
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h3 id="1-mux_regmux_mode属性"&gt;1. mux_reg、mux_mode属性
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="1_mux_reg属性" class="gallery-image" data-flex-basis="270px" data-flex-grow="112" height="728" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://i-blog.csdnimg.cn/blog_migrate/c228f566dd919f8a098e5c2c9efafc88.png#pic_center" srcset="https://lbmcu.github.io/c228f566dd919f8a098e5c2c9efafc88_18111884819042761124_hu_31a78da47b1dbcac.png 800w, https://i-blog.csdnimg.cn/blog_migrate/c228f566dd919f8a098e5c2c9efafc88.png#pic_center 819w" width="819"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="1_mux_reg属性" class="gallery-image" data-flex-basis="270px" data-flex-grow="112" height="728" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://lbmcu.github.io/linux/kernel/%E8%AE%BE%E5%A4%87%E6%A0%91pinctrl%E5%AE%8F%E5%AE%9A%E4%B9%89%E5%88%86%E6%9E%90/img/mux_reg.png" srcset="https://lbmcu.github.io/linux/kernel/%E8%AE%BE%E5%A4%87%E6%A0%91pinctrl%E5%AE%8F%E5%AE%9A%E4%B9%89%E5%88%86%E6%9E%90/img/mux_reg_hu_31a78da47b1dbcac.png 800w, https://lbmcu.github.io/linux/kernel/%E8%AE%BE%E5%A4%87%E6%A0%91pinctrl%E5%AE%8F%E5%AE%9A%E4%B9%89%E5%88%86%E6%9E%90/img/mux_reg.png 819w" width="819"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;mux_reg：复用控制寄存器&lt;/strong&gt; 偏移地址：&lt;code&gt;0x08h =&amp;gt; 0x0008&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;mux_mode：前4个bit：MUX_MODE(复用模式)&lt;/strong&gt; 默认为GPIO模式：&lt;code&gt;101(Bin) =&amp;gt; 0x5(Hex)&lt;/code&gt;&lt;/p&gt;
 &lt;br&gt;
 &lt;hr&gt;
 &lt;h3 id="2-conf_reg属性"&gt;2. conf_reg属性
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="2_conf_reg属性" class="gallery-image" data-flex-basis="459px" data-flex-grow="191" height="406" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://i-blog.csdnimg.cn/blog_migrate/2dc52c416d9fcf3857372c5966406805.png#pic_center" width="777"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="2_conf_reg属性" class="gallery-image" data-flex-basis="459px" data-flex-grow="191" height="406" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://lbmcu.github.io/linux/kernel/%E8%AE%BE%E5%A4%87%E6%A0%91pinctrl%E5%AE%8F%E5%AE%9A%E4%B9%89%E5%88%86%E6%9E%90/img/conf_reg.png" width="777"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;conf_reg：引脚控制寄存器&lt;/strong&gt; 偏移地址：&lt;code&gt;0x4Ch -&amp;gt; 0x004C&lt;/code&gt;&lt;/p&gt;
 &lt;br&gt;
 &lt;hr&gt;
 &lt;h3 id="3-config属性"&gt;3. config属性
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="3_1config" class="gallery-image" data-flex-basis="328px" data-flex-grow="136" height="560" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://i-blog.csdnimg.cn/blog_migrate/342cf5b316efb44ca10d831a45816eff.png#pic_center" width="767"&gt;
-&lt;img alt="3_1config" class="gallery-image" data-flex-basis="274px" data-flex-grow="114" height="679" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://i-blog.csdnimg.cn/blog_migrate/f4496e9dd2dbfbdf8f4703679c038223.png#pic_center" width="777"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="3_1config" class="gallery-image" data-flex-basis="328px" data-flex-grow="136" height="560" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://lbmcu.github.io/linux/kernel/%E8%AE%BE%E5%A4%87%E6%A0%91pinctrl%E5%AE%8F%E5%AE%9A%E4%B9%89%E5%88%86%E6%9E%90/img/config_1.png" width="767"&gt;
+&lt;img alt="3_1config" class="gallery-image" data-flex-basis="274px" data-flex-grow="114" height="679" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://lbmcu.github.io/linux/kernel/%E8%AE%BE%E5%A4%87%E6%A0%91pinctrl%E5%AE%8F%E5%AE%9A%E4%B9%89%E5%88%86%E6%9E%90/img/config_2.png" width="777"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;config：引脚控制寄存器&lt;/strong&gt; 参数设置：&lt;code&gt;0x1b0b0&lt;/code&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -397,13 +397,13 @@
 &lt;br&gt;
 &lt;hr&gt;
 &lt;h3 id="4-input_reginput_val属性"&gt;4. input_reg，input_val属性
-&lt;/h3&gt;&lt;p&gt;&lt;img alt="input_val属性" class="gallery-image" data-flex-basis="304px" data-flex-grow="127" height="577" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://i-blog.csdnimg.cn/blog_migrate/4b12b8b518290f97a0ff86d364a8b5dd.png#pic_center" width="733"&gt;&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;img alt="input_val属性" class="gallery-image" data-flex-basis="304px" data-flex-grow="127" height="577" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://lbmcu.github.io/linux/kernel/%E8%AE%BE%E5%A4%87%E6%A0%91pinctrl%E5%AE%8F%E5%AE%9A%E4%B9%89%E5%88%86%E6%9E%90/img/input_val.png" width="733"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;input_reg：菊花链配置寄存器 偏移地址&lt;/strong&gt;，&lt;code&gt;MX6ULL_PAD_SNVS_TAMPER0__GPIO5_IO00&lt;/code&gt;无该设置，所以设置为&lt;code&gt;0x0000&lt;/code&gt;。
 &lt;strong&gt;input_val：菊花链配置寄存器 偏移地址&lt;/strong&gt;，&lt;code&gt;MX6ULL_PAD_SNVS_TAMPER0__GPIO5_IO00&lt;/code&gt;无该设置，所以设置为&lt;code&gt;0x0&lt;/code&gt;。&lt;/p&gt;
 &lt;br&gt;
 &lt;hr&gt;
 &lt;h1 id="四菊花链"&gt;四、菊花链
-&lt;/h1&gt;&lt;p&gt;&lt;img alt="菊花链" class="gallery-image" data-flex-basis="200px" data-flex-grow="83" height="845" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://i-blog.csdnimg.cn/blog_migrate/8cd2c2257d99148d0391bbc31a4e57e6.png#pic_center" width="705"&gt;&lt;/p&gt;
+&lt;/h1&gt;&lt;p&gt;&lt;img alt="菊花链" class="gallery-image" data-flex-basis="200px" data-flex-grow="83" height="845" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://lbmcu.github.io/linux/kernel/%E8%AE%BE%E5%A4%87%E6%A0%91pinctrl%E5%AE%8F%E5%AE%9A%E4%B9%89%E5%88%86%E6%9E%90/img/daisy_chain.png" width="705"&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h1 id="参考"&gt;参考
 &lt;/h1&gt;&lt;ul&gt;
